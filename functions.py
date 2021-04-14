@@ -68,6 +68,19 @@ def draw_shape(shape, viewoprt_distance, screen, screen_size, thickness=1, color
     for p1, p2 in shape.get_lines_2d(viewoprt_distance, screen_size):
         draw.line(screen, color, p1, p2, thickness)
 
+        # #tu moje testy
+        # (A,B,C) = get_straight(p1,p2)
+        # y1 = int(p1[1])
+        # y2 = int(p2[1])
+        # if y1 > y2:
+        #     for i in range (y2,y1):
+        #         draw.line(screen, color, [i,get_x(i,A,B,C)], [i+1,get_x(i+1,A,B,C)], thickness)
+
+        # else:
+        #     for i in range (y1,y2):
+        #         draw.line(screen, color, [i,get_x(i,A,B,C)], [i+1,get_x(i+1,A,B,C)], thickness)
+
+
 def find_min_max_area(construction):
     x_min = 999999999
     y_min = 999999999
@@ -91,3 +104,17 @@ def find_min_max_area(construction):
         
     return (x_min,x_max), (y_min,y_max)
 
+def get_straight(p1, p2):
+    x1 = p1[0]
+    y1 = p1[1]
+    x2 = p2[0]
+    y2 = p2[1]
+    A = y1-y2
+    B = x2-x1
+    C = (y2 - y1)*x1 - (x2 - x1)*y1
+
+    return (A,B,C)
+
+def get_x(y, A, B, C):
+    x = - (B * y + C) /A
+    return x
