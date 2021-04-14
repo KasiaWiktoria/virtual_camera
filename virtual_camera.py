@@ -25,8 +25,8 @@ rotation_keys = {
 move_keys = {
     K_UP: (Y, -step),
     K_DOWN: (Y, step),
-    K_RIGHT:(X, -step),
-    K_LEFT: (X, step),
+    K_RIGHT:(X, step),
+    K_LEFT: (X, -step),
     K_PERIOD: (Z, -step),
     K_COMMA: (Z, step)
 }
