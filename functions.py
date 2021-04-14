@@ -91,7 +91,12 @@ def find_min_max_area(construction):
         
     return (x_min,x_max), (y_min,y_max)
 
-def get_straight(x1,y1,x2,y2):
+def get_straight(x1, y1, x2, y2):
     a = (y2 - y1)/(x2 - x1)
     b = y1 - a * x1
     return (a,b)
+
+
+def get_x(y, a, b):
+    x = (y - b)/a
+    return x
