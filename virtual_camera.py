@@ -59,5 +59,6 @@ while True:
             viewoprt_distance += zoom_keys[key]
         
     construction.draw(viewoprt_distance, screen, screen_size)
+
     pygame.display.flip()
 
