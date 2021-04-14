@@ -65,8 +65,8 @@ def get_transformations(vertices, translation, rotation):
     return after_rotation
 
 def draw_shape(shape, viewoprt_distance, screen, screen_size, thickness=1, color=(255, 255, 255)):
-    for x, y in shape.get_lines_2d(viewoprt_distance, screen_size):
-        draw.line(screen, color, x, y, thickness)
+    for p1, p2 in shape.get_lines_2d(viewoprt_distance, screen_size):
+        draw.line(screen, color, p1, p2, thickness)
 
 def find_min_max_area(construction):
     x_min = 999999999
