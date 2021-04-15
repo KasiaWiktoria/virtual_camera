@@ -65,7 +65,9 @@ def get_transformations(vertices, translation, rotation):
     return after_rotation
 
 def draw_shape(shape, viewoprt_distance, screen, screen_size, thickness=1, color=(255, 255, 255)):
-    for p1, p2 in shape.get_lines_2d(viewoprt_distance, screen_size):
+    for line in shape.get_lines_2d(viewoprt_distance, screen_size):
+        p1 = line[0]
+        p2 = line[1]
         draw.line(screen, color, p1, p2, thickness)
 
         # #tu moje testy
@@ -118,3 +120,38 @@ def get_straight(p1, p2):
 def get_x(y, A, B, C):
     x = - (B * y + C) /A
     return x
+
+
+def distance_from_camera(x,y,z):
+    return sqrt(x**2 + y**2 + z**2)
+
+
+def find_coordinates(shape_id, edge_id):
+    shape = construction.get_objects()[shape_id]
+    p1_id, p2_id = shape.get_edges()[edge_id]
+    p1 = shape.get_vertices()[p1_id]
+    p2 = shape.get_vertices()[p2_id]
+    return p1,p2
+
+def cross_lines(construction, y, viewoprt_distance, screen_size):
+    cross_lines = []
+
+    for shape_id, shape in enumerate(construction.get_shapes()):
+        lines = list(shape.get_lines_2d(viewoprt_distance, screen_size))
+        for edge_id, line in enumerate(lines):
+            if ( y > line[0][1] and y < line[1][1]) or (y > line[1][1] and y < line[0][1]):
+                cross_lines.append((find_coordinates(shape_id, edge_id), line))
+    return cross_lines
+
+def find_visible_lines(lines, construction):
+    dv1 = 999999999999
+    dv2 = 999999999999
+
+    for p1, p2, line in lines:
+
+        d1 = distance_from_camera(p1)
+        d2 = distance_from_camera(p2)
+
+
+        if d1 > dv1 and d2 > dv1 and d1 > dv2 and d2 > dv2:
+            visible_line = append(line)

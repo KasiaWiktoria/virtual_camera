@@ -2,6 +2,7 @@ import sys, pygame
 from pygame import K_q, K_w, K_a, K_s, K_e, K_d, K_z, K_x, K_UP, K_DOWN, K_LEFT, K_RIGHT, K_PERIOD, K_COMMA
 from read_file import read_objects_from_file
 from construction import Construction
+from functions import *
 
 viewoprt_distance = 500
 screen_size = (1200, 800)
@@ -40,6 +41,11 @@ pygame.init()
 screen = pygame.display.set_mode(screen_size)
 shapes = read_objects_from_file(filename)
 construction = Construction(shapes)
+
+
+
+lines = cross_lines(construction, 400, viewoprt_distance, screen_size)
+print(lines[0])
 
 while True:
     screen.fill((0,0,0))

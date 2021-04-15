@@ -12,7 +12,7 @@ class object_3D:
     def get_lines_2d(self, viewoprt_distance, screen_size):
         after_transformations = get_transformations(self.__vertices, self.__translation, self.__rotation)
         perspective_location = project_to_2d(after_transformations, viewoprt_distance, screen_size)
-        return ((perspective_location[v1], perspective_location[v2]) for v1, v2 in self.__edges)
+        return [[perspective_location[v1], perspective_location[v2]] for v1, v2 in self.__edges]
 
     def rotate(self, axis, angle):
         self.__rotation[axis] += angle
@@ -37,4 +37,7 @@ class Construction:
     def translate(self, axis, step):
         for object in self.__objects:
             object.translate(axis,step)
+
+    def get_shapes(self):
+        return self.__objects
 
