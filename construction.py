@@ -3,9 +3,10 @@ from numpy import array
 
 class object_3D:
 
-    def __init__(self, vertices, edges):
+    def __init__(self, vertices, edges, walls):
         self.__vertices = array(vertices)
         self.__edges = edges
+        self.__walls = walls
         self.__translation = [0, 0, 0]
         self.__rotation = [0, 0, 0]
 
@@ -19,6 +20,15 @@ class object_3D:
     
     def translate(self, axis, step):
         self.__translation[axis] += step
+
+    def get_vertices(self):
+      return self.__vertices
+
+    def get_edges(self):
+      return self.__edges
+
+    def get_walls(self):
+      return self.__walls
 
 
 class Construction:
@@ -38,6 +48,5 @@ class Construction:
         for object in self.__objects:
             object.translate(axis,step)
 
-    def get_shapes(self):
-        return self.__objects
-
+    def get_objects(self):
+      return self.__objects

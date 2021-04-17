@@ -12,7 +12,7 @@ step = 0.5
 radian_step = 0.01
 zoom_step = 5
 
-filename = "kamienica.txt"
+filename = "cubes.txt"
 
 rotation_keys = {
     K_q: (X, -radian_step),
@@ -45,7 +45,10 @@ construction = Construction(shapes)
 
 
 lines = cross_lines(construction, 400, viewoprt_distance, screen_size)
-print(lines[0])
+y = 100
+v_lines = find_visible_lines(y, lines, construction)
+print(v_lines[0])
+
 
 while True:
     screen.fill((0,0,0))

@@ -450,6 +450,7 @@ edges
 67,64
 
 
+
 vertices
 
 # dół
