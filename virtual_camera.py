@@ -2,10 +2,12 @@ import sys, pygame
 from pygame import K_q, K_w, K_a, K_s, K_e, K_d, K_z, K_x, K_UP, K_DOWN, K_LEFT, K_RIGHT, K_PERIOD, K_COMMA
 from read_file import read_objects_from_file
 from construction import Construction
-from functions import *
+from define_visibility import *
 
 viewoprt_distance = 500
-screen_size = (1200, 800)
+y_size = 800
+x_size = 1200
+screen_size = (x_size, y_size)
 
 X, Y, Z = 0, 1, 2
 step = 0.5
@@ -43,9 +45,8 @@ shapes = read_objects_from_file(filename)
 construction = Construction(shapes)
 
 
-
-lines = cross_lines(construction, 400, viewoprt_distance, screen_size)
-y = 100
+y = 400
+lines = cross_lines(construction, y, viewoprt_distance, screen_size)
 v_lines, u_lines = find_visible(construction, y, lines, [], [])
 print(v_lines[0])
 
@@ -67,7 +68,7 @@ while True:
         if pressed[key]:
             viewoprt_distance += zoom_keys[key]
         
-    construction.draw(viewoprt_distance, screen, screen_size)
+    construction.draw_only_visible(viewoprt_distance, screen, screen_size)
 
     pygame.display.flip()
 

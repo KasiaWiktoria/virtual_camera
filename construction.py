@@ -1,4 +1,5 @@
 from functions import get_transformations, project_to_2d, draw_shape
+from define_visibility import draw_line
 from numpy import array
 
 class object_3D:
@@ -36,6 +37,12 @@ class Construction:
     def __init__(self, objects):
         self.__objects = objects
 
+    def draw_only_visible(self, viewoprt_distance, screen, screen_size):
+        _, y_size = screen_size
+
+        for y in range(0, y_size):
+            draw_line(self, y, viewoprt_distance, screen, screen_size)
+    
     def draw(self, viewoprt_distance, screen, screen_size):
         for object in self.__objects:
             draw_shape(object, viewoprt_distance, screen, screen_size)
