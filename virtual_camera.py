@@ -46,7 +46,7 @@ construction = Construction(shapes)
 
 lines = cross_lines(construction, 400, viewoprt_distance, screen_size)
 y = 100
-v_lines = find_visible_lines(y, lines, construction)
+v_lines, u_lines = find_visible(construction, y, lines, [], [])
 print(v_lines[0])
 
 

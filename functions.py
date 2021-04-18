@@ -162,13 +162,44 @@ def find_visible_lines(y, lines, construction):
     print(f'closest_line: {closest_line}')
     visible_lines.append(closest_line)
     lines.remove(closest_line)
-
-    cover_lines = [closest_line]
     
-    while cover_lines != []:
+    l_end = find_polygon_end(construction, y, closest_line, lines)
+    if l_end is None:
+            print('1. Koniec bryły poza krawędzią ekranu!')
+    lines_to_remove, cover_lines = lines_between_edges(y, closest_line, l_end, lines)
+    lines.remove(l_end)
+    for l_r in lines_to_remove:
+            lines.remove(l_r)
+    
+    if cover_lines == []:
+        visible_lines.append(l_end)
+    else:
         l = find_closest_line(y, cover_lines)
         l_end = find_polygon_end(construction, y, l, lines)
+
+        lines_to_remove, cover_lines = lines_between_edges(y, l, l_end, lines)
+        lines.remove(l_end)
+        for l_r in lines_to_remove:
+                lines.remove(l_r)
+
+        if l_end is None:
+            print('2. Koniec bryły poza krawędzią ekranu!')
+            # screen_edge = 
+            # lines_to_remove, cover_lines = lines_between_edges(y, l_end, screen_edge, lines)
+            # lines.remove(lines_to_remove)
+    
         
+
+
+
+    cover_lines = [closest_line]
+    counter = 0
+    
+    while cover_lines != []:
+        counter += 1
+        l = find_closest_line(y, cover_lines)
+        l_end = find_polygon_end(construction, y, l, lines)
+        print(counter)
         if l_end is None:
             print('Koniec bryły poza krawędzią ekranu!')
         visible_lines.append(l)
@@ -186,6 +217,41 @@ def find_visible_lines(y, lines, construction):
     return visible_lines
 
 
+#------------------------------
+def find_visible(construction, y, all_lines, visible_lines, unvisible_lines):
+    lines_to_check = lists_diff(lists_diff(all_lines, visible_lines), unvisible_lines)
+
+    closest_line = find_closest_line(y, lines_to_check)
+    visible_lines.append(closest_line)
+    lines_to_check.remove(closest_line)
+    
+    l_end = find_polygon_end(construction, y, closest_line, all_lines)
+
+    if l_end is None:
+            print('1. Koniec bryły poza krawędzią ekranu!')
+    lines_to_remove, cover_lines = lines_between_edges(y, closest_line, l_end, lines_to_check)
+    if l_end in lines_to_check:
+        lines_to_check.remove(l_end)
+    for l_r in lines_to_remove:
+        lines_to_check.remove(l_r)
+        unvisible_lines.append(l_r)
+    
+    if cover_lines == []:
+        visible_lines.append(l_end)
+    else:
+        v_lines, unv_lines = find_visible(construction, y, all_lines, visible_lines, unvisible_lines)
+        visible_lines += v_lines
+        unvisible_lines += unv_lines
+
+    return visible_lines, unvisible_lines
+
+
+#------------------------------
+
+def lists_diff(li1, li2):
+    li_dif = [i for i in li1 + li2 if i not in li1 or i not in li2]
+    return li_dif
+
 def find_polygon_end(construction, y, line, lines):
     polygons = line['polygons']
     shape = construction.get_objects()[line['shape_id']]
@@ -195,20 +261,19 @@ def find_polygon_end(construction, y, line, lines):
 
     adjacent_lines = find_adjacent_lines(polygons_coordinates, lines)
 
-
     return find_closest_line(y, adjacent_lines)
 
 def lines_between_edges(y, l1, l2, lines):
     lines_to_remove = []
     cover_lines = []
 
-    x1 = get_x(y, l1['2d_coordinates'])
-    x2 = get_x(y, l2['2d_coordinates'])
-    z2 = get_z(y, l2['3d_coordinates'])
+    x1 = get_x(y, l1['2d_coordinates'][0], l1['2d_coordinates'][1])
+    x2 = get_x(y, l2['2d_coordinates'][0], l2['2d_coordinates'][1])
+    z2 = get_z(y, l2['3d_coordinates'][0], l2['3d_coordinates'][1])
     
     for line in lines:
-        x = get_x(y, line['2d_coordinates'])
-        z = get_z(y, line['3d_coordinates'])
+        x = get_x(y, line['2d_coordinates'][0], line['2d_coordinates'][1])
+        z = get_z(y, line['3d_coordinates'][0], line['3d_coordinates'][1])
         if x > x1 and x < x2 or x > x2 and x < x1:
             if z > z2:
                 lines_to_remove.append(line)
@@ -233,18 +298,22 @@ def find_adjacent_lines(polygons_coordinates, lines):
         for polygon_coordinates in polygons_coordinates:
             if line_belong_to_polygon(line['3d_coordinates'], polygon_coordinates):
                 adjacent_lines.append(line)
+                #print(f'polygon edge: {line}')
+    
     return adjacent_lines
 
 def line_belong_to_polygon(line_coordinates, polygon_coordinates):
     
-    for point in line_coordinates:
-        points_cmp = False
-        for vertice in polygon_coordinates:
-            points_cmp = reduce(lambda i, j : i and j, map(lambda m, k: m == k, point, vertice), True)
-
-        if points_cmp == False:
-            return False
-    return points_cmp
+    points_cmp = False
+    for vertice in polygon_coordinates:
+        points_cmp = reduce(lambda i, j : i and j, map(lambda m, k: m == k, line_coordinates[0], vertice), True)
+        #print(f'wynik porównania: {points_cmp}')
+        if points_cmp:
+            for vertice in polygon_coordinates:
+                points_cmp = reduce(lambda i, j : i and j, map(lambda m, k: m == k, line_coordinates[1], vertice), True)
+                if points_cmp:
+                    #print(f'WSPÓŁRZĘDNA OK--- współrzędne lini: {vertice}, współrzędne wielokąta: {polygon_coordinates}')
+                    return True
 
 
 def find_closest_line(y, lines):
